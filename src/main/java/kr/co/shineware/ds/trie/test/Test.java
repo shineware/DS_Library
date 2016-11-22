@@ -1,5 +1,6 @@
 package kr.co.shineware.ds.trie.test;
 
+import kr.co.shineware.ds.trie.FindContext;
 import kr.co.shineware.ds.trie.TrieDictionary;
 
 public class Test {
@@ -16,10 +17,12 @@ public class Test {
 		trieDic.save("trie.db");
 		trieDic = new TrieDictionary<String>();
 		trieDic.load("trie.db");
-		System.out.println(trieDic.get("goo"));
-		System.out.println(trieDic.hasChildren());
-		System.out.println(trieDic.get("good"));
-		System.out.println(trieDic.hasChildren());
+
+		final FindContext<String> context = new FindContext<>(trieDic.getRoot());
+		System.out.println(trieDic.get(context, "goo"));
+		System.out.println(context.hasCurrentChildren());
+		System.out.println(trieDic.get(context, "good"));
+		System.out.println(context.hasCurrentChildren());
 	}
 
 }

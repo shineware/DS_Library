@@ -1,5 +1,6 @@
 package kr.co.shineware.ds.trie.test;
 
+import kr.co.shineware.ds.trie.FindContext;
 import kr.co.shineware.ds.trie.TrieDictionary;
 
 public class Test_LargeSize {
@@ -40,10 +41,11 @@ public class Test_LargeSize {
 		
 		
 		String[] verifyData	= {"", "A", "AT", "AAG", "a", "Aa", "AAAR", "ZAAR"};
-		
+
+		final FindContext<String> context = new FindContext<>(trieDic.getRoot());
 		for(String s: verifyData) {
-			System.out.println(s + " - "+ trieDic.get(s));
-			System.out.println(trieDic.hasChildren());
+			System.out.println(s + " - "+ trieDic.get(context, s));
+			System.out.println(context.hasCurrentChildren());
 		}
 		
 	}

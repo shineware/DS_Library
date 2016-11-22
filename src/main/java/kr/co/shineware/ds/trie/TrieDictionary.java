@@ -4,12 +4,9 @@ import kr.co.shineware.ds.trie.model.TrieNode;
 
 public class TrieDictionary<V> {
 	private TrieNode<V> root;
-	private TrieNode<V> currentNode;
-	private boolean hasChildren;
+
 	public TrieDictionary(){
 		setRoot(new TrieNode<V>());
-		hasChildren = false;
-		currentNode = null;
 	}
 	public TrieNode<V> getRoot() {
 		return root;
@@ -76,61 +73,37 @@ public class TrieDictionary<V> {
 	}
 
 	public V get(String keys){
-		return this.get(keys.toCharArray());
+		return this.get(new FindContext<V>(root), keys.toCharArray());
 	}
 
-	public V get(char key){
-		hasChildren = false;
-		if(currentNode == null){
-			currentNode = root;
-		}
+	public V get(FindContext<V> context, String keys) {
+		return get(context, keys.toCharArray());
+	}
 
-		TrieNode<V>[] children = currentNode.getChildren();
-		if(children == null){
-			hasChildren = false;
+	public V get(FindContext<V> context, char key){
+		final TrieNode<V>[] children = context.getCurrentChildren();
+		if (children == null) {
 			return null;
 		}
 
-		int idx = retrieveNode(children, key);
-		if(idx == -1){
-			hasChildren = false;
+		final int idx = retrieveNode(children, key);
+		if (idx == -1) {
 			return null;
 		}
-		currentNode = children[idx];
+		context.setCurrentNode(children[idx]);
 
-		if(currentNode.getChildren() == null){
-			hasChildren = false;
-		}else{
-			hasChildren = true;
-		}
-		return currentNode.getValue();
+		return context.getCurrentNode().getValue();
 	}
 
-	public V get(char[] keys){
-		hasChildren = false;
-		TrieNode<V> node = root;
-		for(int i=0;i<keys.length;i++){
-			char key = keys[i];
-			TrieNode<V>[] children = node.getChildren();
-			if(children == null){
-				hasChildren = false;
-				return null;
-			}
+	public V get(FindContext<V> context, char[] keys) {
+		V value = null;
+		for (final char eachKey : keys) {
+			value = get(context, eachKey);
+		}
 
-			int idx = retrieveNode(children, key);
-			if(idx == -1){
-				hasChildren = false;
-				return null;
-			}
-			node = children[idx];
-		}
-		if(node.getChildren() == null){
-			hasChildren = false;
-		}else{
-			hasChildren = true;
-		}
-		return node.getValue();
+		return value;
 	}
+
 	private int retrieveNode(TrieNode<V>[] children, char key) {
 		int head = 0;
 		int tail = children.length-1;
@@ -160,14 +133,5 @@ public class TrieDictionary<V> {
 	}
 	public void load(String filename){
 		root.load(filename);
-	}
-	public boolean hasChildren() {
-		return hasChildren;
-	}
-	public TrieNode<V> getCurrentNode() {
-		return currentNode;
-	}
-	public void setCurrentNode(TrieNode<V> currentNode) {
-		this.currentNode = currentNode;
 	}
 }

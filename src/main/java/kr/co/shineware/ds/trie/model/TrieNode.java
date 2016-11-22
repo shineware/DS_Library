@@ -30,7 +30,6 @@ public class TrieNode<V> extends Node<Character, V>{
 		ObjectOutputStream dos;
 		try {
 			dos = new ObjectOutputStream(new BufferedOutputStream(new GZIPOutputStream(new FileOutputStream(filename))));
-//			dos = new ObjectOutputStream(new BufferedOutputStream((new FileOutputStream(filename))));
 			write(dos,true);
 			dos.close();
 		} catch (Exception e) {
